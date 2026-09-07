@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會計星航：五大要素大冒險 | Accounting Odyssey</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            asset: { light: '#ecfdf5', DEFAULT: '#10b981', dark: '#047857' },
+            liability: { light: '#fff1f2', DEFAULT: '#f43f5e', dark: '#be123c' },
+            equity: { light: '#f5f3ff', DEFAULT: '#8b5cf6', dark: '#6d28d9' },
+            revenue: { light: '#fefce8', DEFAULT: '#eab308', dark: '#a16207' },
+            expense: { light: '#fff7ed', DEFAULT: '#f97316', dark: '#c2410c' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap');
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .scale-beam-transition {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .pan-transition {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.8); }
+    }
+    .animate-glow {
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes bounceSmall {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-bounce-subtle {
+      animation: bounceSmall 1.5s ease-in-out infinite;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- 頂部導航欄 (Navigation Header) -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 lg:px-8 py-3.5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-300 bg-clip-text text-transparent">
+            會計星航：五大要素大冒險
+          </h1>
+          <p class="text-xs text-slate-400">大一會計學原理 · 互動式全方位學習系統</p>
+        </div>
+      </div>
+
+      <!-- 頁籤導航按鈕 -->
+      <nav class="flex flex-wrap items-center gap-1 sm:gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60 text-xs sm:text-sm font-medium">
+        <button onclick="switchTab('guide')" id="nav-guide" class="nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow">
+          <span>📖</span><span>要素圖鑑</span>
+        </button>
+        <button onclick="switchTab('arena')" id="nav-arena" class="nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60">
+          <span>⚡</span><span>科目速配戰</span>
+        </button>
+        <button onclick="switchTab('scale')" id="nav-scale" class="nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60">
+          <span>⚖️</span><span>恆等式天平</span>
+        </button>
+        <button onclick="switchTab('scenario')" id="nav-scenario" class="nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60">
+          <span>🕵️</span><span>商業情境偵探</span>
+        </button>
+        <button onclick="switchTab('exam')" id="nav-exam" class="nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60">
+          <span>🏆</span><span>期末總挑戰</span>
+        </button>
+      </nav>
+
+      <!-- 右側工具區：音效、得分指示與重置 -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-1.5 bg-slate-800/70 border border-slate-700/50 px-3 py-1 rounded-full text-xs font-semibold text-amber-400">
+          <span>⭐ 學習星數：</span>
+          <span id="global-stars" class="text-sm font-bold">0</span>
+        </div>
+        <button onclick="toggleAudio()" id="sound-btn" class="p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition" title="開關音效">
+          <svg id="sound-icon-on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+          </svg>
+          <svg id="sound-icon-off" class="w-5 h-5 hidden text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z m12-2a3 3 0 00-3-3m0 0l6 6m0-6l-6 6"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容容器 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- =============================================================== -->
+    <!-- 模組 1：五大要素圖鑑與防坑指引 (Guidebook & Glossary) -->
+    <!-- =============================================================== -->
+    <section id="tab-guide" class="space-y-6">
+      <!-- 橫幅導引 -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-800 via-indigo-950 to-slate-900 border border-slate-700/80 p-6 sm:p-8 shadow-xl">
+        <div class="max-w-3xl space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold">
+            <span>📚 會計基本語言與骨架</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">會計五大要素核心圖鑑</h2>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            現代會計制度是建立在「權責發生制（Accrual Basis）」與「雙式簿記（Double-Entry）」之上。在記錄任何一筆經濟活動前，必須先判斷該活動屬於哪一大要素。點擊下方要素卡，掌握標準定義、核心特徵、日常科目與易錯地雷！
+          </p>
+        </div>
+      </div>
+
+      <!-- 五大要素切換選擇卡片 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <button onclick="selectElementGuide('asset')" id="guide-card-asset" class="element-tab-btn p-4 rounded-xl border text-left transition-all duration-300 bg-emerald-950/40 border-emerald-500/50 hover:border-emerald-400 ring-2 ring-emerald-500/30">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">💰</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">借方 +</span>
+          </div>
+          <div class="font-bold text-emerald-400 text-lg">資產</div>
+          <div class="text-xs text-slate-400">Assets</div>
+          <div class="text-[11px] text-emerald-200/70 mt-2 line-clamp-2">企業控制之經濟資源，預期帶來未來效益</div>
+        </button>
+
+        <button onclick="selectElementGuide('liability')" id="guide-card-liability" class="element-tab-btn p-4 rounded-xl border text-left transition-all duration-300 bg-slate-800/60 border-slate-700 hover:border-rose-500/50">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">📑</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300">貸方 +</span>
+          </div>
+          <div class="font-bold text-rose-400 text-lg">負債</div>
+          <div class="text-xs text-slate-400">Liabilities</div>
+          <div class="text-[11px] text-rose-200/70 mt-2 line-clamp-2">現時法定或推定義務，清償將導致資源流出</div>
+        </button>
+
+        <button onclick="selectElementGuide('equity')" id="guide-card-equity" class="element-tab-btn p-4 rounded-xl border text-left transition-all duration-300 bg-slate-800/60 border-slate-700 hover:border-purple-500/50">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">🏛️</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">貸方 +</span>
+          </div>
+          <div class="font-bold text-purple-400 text-lg">權益</div>
+          <div class="text-xs text-slate-400">Equity</div>
+          <div class="text-[11px] text-purple-200/70 mt-2 line-clamp-2">資產扣除負債後之剩餘權益（淨資產）</div>
+        </button>
+
+        <button onclick="selectElementGuide('revenue')" id="guide-card-revenue" class="element-tab-btn p-4 rounded-xl border text-left transition-all duration-300 bg-slate-800/60 border-slate-700 hover:border-amber-500/50">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">📈</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">貸方 +</span>
+          </div>
+          <div class="font-bold text-amber-400 text-lg">收益</div>
+          <div class="text-xs text-slate-400">Revenues / Income</div>
+          <div class="text-[11px] text-amber-200/70 mt-2 line-clamp-2">期間內經濟效益增加致權益增加（排除增資）</div>
+        </button>
+
+        <button onclick="selectElementGuide('expense')" id="guide-card-expense" class="element-tab-btn p-4 rounded-xl border text-left transition-all duration-300 bg-slate-800/60 border-slate-700 hover:border-orange-500/50 col-span-2 sm:col-span-1">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">📉</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300">借方 +</span>
+          </div>
+          <div class="font-bold text-orange-400 text-lg">費損</div>
+          <div class="text-xs text-slate-400">Expenses</div>
+          <div class="text-[11px] text-orange-200/70 mt-2 line-clamp-2">期間內經濟效益耗費致權益減少（排除分紅）</div>
+        </button>
+      </div>
+
+      <!-- 要素詳細解析面板 -->
+      <div id="element-detail-container" class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <!-- 動態由 JavaScript 填入資料 -->
+      </div>
+
+      <!-- 快速科目搜尋庫 -->
+      <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>🔍</span><span>常見會計科目快速檢索庫</span>
+            </h3>
+            <p class="text-xs text-slate-400">收錄 60+ 個大一初級會計學必背科目，即時查詢所屬要素與借貸屬性</p>
+          </div>
+          <div class="relative w-full sm:w-72">
+            <input type="text" id="account-search-input" oninput="filterAccounts()" placeholder="搜尋科目名稱（如：預收、折舊、股本）..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+            <span class="absolute right-3 top-2.5 text-xs text-slate-500">快速篩選</span>
+          </div>
+        </div>
+
+        <div id="account-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+          <!-- 動態載入科目列表 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 模組 2：科目分類速配戰 (Account Sorting Arena) -->
+    <!-- =============================================================== -->
+    <section id="tab-arena" class="hidden space-y-6">
+      <!-- 遊戲控制與計分頂欄 -->
+      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4 shadow-lg">
+        <div class="flex items-center gap-4">
+          <div class="bg-indigo-500/10 border border-indigo-500/30 px-3.5 py-2 rounded-xl text-center">
+            <div class="text-xs text-indigo-300 font-semibold">目前得分</div>
+            <div id="arena-score" class="text-2xl font-black text-indigo-400">0</div>
+          </div>
+          <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-2 rounded-xl text-center">
+            <div class="text-xs text-amber-300 font-semibold">連擊 Combo</div>
+            <div id="arena-combo" class="text-2xl font-black text-amber-400">0</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-700 px-3.5 py-2 rounded-xl text-center">
+            <div class="text-xs text-slate-400 font-semibold">挑戰進度</div>
+            <div id="arena-progress" class="text-sm font-bold text-white mt-1">0 / 20</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="startArena(true)" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            重新開始速配
+          </button>
+        </div>
+      </div>
+
+      <!-- 抽卡舞台區域 -->
+      <div class="relative bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center min-h-[280px] shadow-2xl overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-xs uppercase font-bold tracking-widest text-slate-400 mb-2">請點選或按鍵盤數字 1~5 歸類該科目</div>
+
+        <!-- 卡片本體 -->
+        <div id="arena-card" class="w-full max-w-md bg-slate-800 border-2 border-indigo-500/40 hover:border-indigo-400 rounded-2xl p-6 shadow-2xl text-center transition-all duration-300 transform scale-100">
+          <div id="arena-card-badge" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 mb-3">
+            隨機抽卡
+          </div>
+          <h3 id="arena-card-name" class="text-2xl sm:text-3xl font-black text-white tracking-wide">
+            點擊「重新開始」開始答題
+          </h3>
+          <p id="arena-card-eng" class="text-sm font-medium text-slate-400 mt-1">
+            Accounts Ready
+          </p>
+          <div id="arena-card-hint" class="mt-4 text-xs text-slate-400 bg-slate-900/60 rounded-xl p-3 border border-slate-700/50">
+            提示：注意關鍵字！「預收」不是收入，「預付」不是費用喔！
+          </div>
+        </div>
+      </div>
+
+      <!-- 五大要素傳送門按鈕 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <button onclick="submitArenaAnswer('asset')" class="group relative p-4 rounded-2xl bg-emerald-950/40 border-2 border-emerald-600/40 hover:border-emerald-400 hover:bg-emerald-900/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center shadow-lg">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/40">快捷鍵 [1]</div>
+          <div class="text-3xl mb-1 group-hover:scale-110 transition">💰</div>
+          <div class="font-black text-emerald-400 text-lg">資產</div>
+          <div class="text-xs text-emerald-200/70">Assets</div>
+        </button>
+
+        <button onclick="submitArenaAnswer('liability')" class="group relative p-4 rounded-2xl bg-rose-950/40 border-2 border-rose-600/40 hover:border-rose-400 hover:bg-rose-900/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center shadow-lg">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-rose-400 bg-rose-950/80 px-1.5 py-0.5 rounded border border-rose-500/40">快捷鍵 [2]</div>
+          <div class="text-3xl mb-1 group-hover:scale-110 transition">📑</div>
+          <div class="font-black text-rose-400 text-lg">負債</div>
+          <div class="text-xs text-rose-200/70">Liabilities</div>
+        </button>
+
+        <button onclick="submitArenaAnswer('equity')" class="group relative p-4 rounded-2xl bg-purple-950/40 border-2 border-purple-600/40 hover:border-purple-400 hover:bg-purple-900/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center shadow-lg">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-purple-400 bg-purple-950/80 px-1.5 py-0.5 rounded border border-purple-500/40">快捷鍵 [3]</div>
+          <div class="text-3xl mb-1 group-hover:scale-110 transition">🏛️</div>
+          <div class="font-black text-purple-400 text-lg">權益</div>
+          <div class="text-xs text-purple-200/70">Equity</div>
+        </button>
+
+        <button onclick="submitArenaAnswer('revenue')" class="group relative p-4 rounded-2xl bg-amber-950/40 border-2 border-amber-600/40 hover:border-amber-400 hover:bg-amber-900/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center shadow-lg">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-amber-400 bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-500/40">快捷鍵 [4]</div>
+          <div class="text-3xl mb-1 group-hover:scale-110 transition">📈</div>
+          <div class="font-black text-amber-400 text-lg">收益</div>
+          <div class="text-xs text-amber-200/70">Revenues</div>
+        </button>
+
+        <button onclick="submitArenaAnswer('expense')" class="group relative p-4 rounded-2xl bg-orange-950/40 border-2 border-orange-600/40 hover:border-orange-400 hover:bg-orange-900/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center shadow-lg col-span-2 sm:col-span-1">
+          <div class="absolute top-2 left-3 text-[10px] font-mono text-orange-400 bg-orange-950/80 px-1.5 py-0.5 rounded border border-orange-500/40">快捷鍵 [5]</div>
+          <div class="text-3xl mb-1 group-hover:scale-110 transition">📉</div>
+          <div class="font-black text-orange-400 text-lg">費損</div>
+          <div class="text-xs text-orange-200/70">Expenses</div>
+        </button>
+      </div>
+
+      <!-- 即時錯誤詳解彈出/筆記本區塊 -->
+      <div id="arena-feedback" class="hidden rounded-2xl border p-5 transition-all">
+        <!-- 動態解析提示 -->
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 模組 3：會計恆等式動態天平 (Balance Scale Sandbox) -->
+    <!-- =============================================================== -->
+    <section id="tab-scale" class="hidden space-y-6">
+      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-2">
+              <span>⚖️ 動態物理平衡模擬</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-white">會計恆等式（Accounting Equation）天平</h2>
+            <p class="text-sm text-slate-400">探索會計學的核心基石：為什麼無論發生任何交易，天平永遠能維持恆等？</p>
+          </div>
+          <!-- 恆等式模式切換按鈕 -->
+          <div class="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-700 text-xs font-bold">
+            <button onclick="setScaleMode('basic')" id="scale-mode-basic" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow">
+              基礎式：資產 = 負債 + 權益
+            </button>
+            <button onclick="setScaleMode('expanded')" id="scale-mode-expanded" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">
+              擴展式：資產 = 負債 + 權益 + 收益 - 費損
+            </button>
+          </div>
+        </div>
+
+        <!-- 視覺化天平區域 -->
+        <div class="relative bg-slate-900/90 rounded-2xl border border-slate-700/80 p-6 flex flex-col items-center justify-center overflow-hidden min-h-[340px]">
+          <!-- 天平狀態指標 -->
+          <div id="scale-status-badge" class="absolute top-4 px-4 py-1.5 rounded-full text-xs font-black tracking-wide bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>完美平衡 (Balanced)</span>
+          </div>
+
+          <!-- 動態天平結構 -->
+          <div class="w-full max-w-2xl mt-8">
+            <div class="relative flex justify-center">
+              <div class="w-4 h-40 bg-gradient-to-b from-slate-600 to-slate-800 rounded-t border-t border-slate-500 shadow-md"></div>
+              <div class="absolute bottom-0 w-36 h-4 bg-slate-700 rounded-full border border-slate-600"></div>
+
+              <div class="absolute top-[-10px] w-8 h-8 rounded-full bg-indigo-500 border-2 border-indigo-200 shadow-lg flex items-center justify-center z-20">
+                <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+              </div>
+
+              <!-- 橫樑 (Beam) -->
+              <div id="scale-beam" class="scale-beam-transition absolute top-[-2px] w-full max-w-xl h-3 bg-gradient-to-r from-emerald-500 via-indigo-400 to-rose-500 rounded-full shadow-lg z-10 origin-center flex justify-between items-center px-6">
+                <!-- 左掛繩與盤子 (Left Pan: Assets) -->
+                <div id="pan-left" class="pan-transition absolute -left-2 top-3 flex flex-col items-center origin-top">
+                  <div class="w-0.5 h-24 bg-slate-400"></div>
+                  <div class="w-48 sm:w-56 p-4 rounded-2xl bg-emerald-950/80 border-2 border-emerald-500 shadow-xl text-center backdrop-blur-sm">
+                    <div class="text-xs font-bold text-emerald-400 flex items-center justify-center gap-1">
+                      <span>💰</span><span>左方：資產總額</span>
+                    </div>
+                    <div id="val-asset-display" class="text-2xl font-black text-white mt-1">$ 100,000</div>
+                    <div id="val-asset-sub" class="text-[10px] text-emerald-300/80 mt-1">借方正常餘額</div>
+                  </div>
+                </div>
+
+                <!-- 右掛繩與盤子 (Right Pan: Liabilities + Equity) -->
+                <div id="pan-right" class="pan-transition absolute -right-2 top-3 flex flex-col items-center origin-top">
+                  <div class="w-0.5 h-24 bg-slate-400"></div>
+                  <div class="w-48 sm:w-56 p-4 rounded-2xl bg-rose-950/80 border-2 border-rose-500 shadow-xl text-center backdrop-blur-sm">
+                    <div class="text-xs font-bold text-rose-300 flex items-center justify-center gap-1">
+                      <span>📑</span><span id="right-pan-title">右方：負債 + 權益</span>
+                    </div>
+                    <div id="val-right-display" class="text-2xl font-black text-white mt-1">$ 100,000</div>
+                    <div id="val-right-sub" class="text-[10px] text-rose-200/80 mt-1">貸方正常餘額</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 數值差額提示 -->
+          <div id="scale-diff-text" class="mt-28 text-xs text-slate-400 font-mono">
+            左邊資產 ($100,000) = 右邊來源 ($100,000) ｜ 差額：$0
+          </div>
+        </div>
+
+        <!-- 數值調整控制盤 (Interactive Sliders) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="bg-slate-900/70 border border-emerald-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-emerald-400 flex items-center gap-1"><span>🟢</span> 資產 (Assets)</span>
+              <span id="slider-asset-label" class="text-white font-mono">$100,000</span>
+            </div>
+            <input type="range" id="slider-asset" min="0" max="300000" step="5000" value="100000" oninput="updateScaleFromSliders()" class="w-full accent-emerald-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-500">
+              <span>$0</span>
+              <span>$150k</span>
+              <span>$300k</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/70 border border-rose-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-rose-400 flex items-center gap-1"><span>🔴</span> 負債 (Liabilities)</span>
+              <span id="slider-liability-label" class="text-white font-mono">$40,000</span>
+            </div>
+            <input type="range" id="slider-liability" min="0" max="300000" step="5000" value="40000" oninput="updateScaleFromSliders()" class="w-full accent-rose-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-500">
+              <span>$0</span>
+              <span>$150k</span>
+              <span>$300k</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/70 border border-purple-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-purple-400 flex items-center gap-1"><span>🟣</span> 權益 (Equity)</span>
+              <span id="slider-equity-label" class="text-white font-mono">$60,000</span>
+            </div>
+            <input type="range" id="slider-equity" min="0" max="300000" step="5000" value="60000" oninput="updateScaleFromSliders()" class="w-full accent-purple-500 cursor-pointer">
+            <div class="flex justify-between text-[10px] text-slate-500">
+              <span>$0</span>
+              <span>$150k</span>
+              <span>$300k</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 擴展模式專用滑桿 (收益與費損) -->
+        <div id="expanded-sliders" class="hidden grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-900/70 border border-amber-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-amber-400 flex items-center gap-1"><span>🟡</span> 收益 (Revenues) [增利]</span>
+              <span id="slider-revenue-label" class="text-white font-mono">$30,000</span>
+            </div>
+            <input type="range" id="slider-revenue" min="0" max="150000" step="5000" value="30000" oninput="updateScaleFromSliders()" class="w-full accent-amber-500 cursor-pointer">
+          </div>
+
+          <div class="bg-slate-900/70 border border-orange-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-orange-400 flex items-center gap-1"><span>🟠</span> 費損 (Expenses) [減利]</span>
+              <span id="slider-expense-label" class="text-white font-mono">$30,000</span>
+            </div>
+            <input type="range" id="slider-expense" min="0" max="150000" step="5000" value="30000" oninput="updateScaleFromSliders()" class="w-full accent-orange-500 cursor-pointer">
+          </div>
+        </div>
+
+        <!-- 一鍵平衡與挑戰題目 -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <button onclick="autoBalanceScale()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <span>✨</span> 自動調整權益達成平衡
+          </button>
+          <button onclick="loadScaleQuiz()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <span>🎯</span> 挑戰未知數解謎題
+          </button>
+        </div>
+
+        <!-- 恆等式解謎卡 (Quiz Card) -->
+        <div id="scale-quiz-card" class="hidden bg-indigo-950/40 border border-indigo-500/40 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-300">恆等式解謎挑戰</span>
+            <span id="scale-quiz-type" class="text-[10px] bg-indigo-500/20 px-2 py-0.5 rounded text-indigo-200">期末未知數推算</span>
+          </div>
+          <p id="scale-quiz-question" class="text-sm text-white font-medium">題目載入中...</p>
+          <div class="flex items-center gap-3">
+            <input type="number" id="scale-quiz-input" placeholder="輸入算出的金額（例如：50000）" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-indigo-400 w-64">
+            <button onclick="checkScaleQuizAnswer()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition">
+              送出答案
+            </button>
+          </div>
+          <div id="scale-quiz-feedback" class="text-xs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 模組 4：商業情境名偵探 (Business Scenario Detective) -->
+    <!-- =============================================================== -->
+    <section id="tab-scenario" class="hidden space-y-6">
+      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold mb-1">
+              <span>🥤 校園手搖飲創業實務篇</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-white">商業情境名偵探</h2>
+            <p class="text-sm text-slate-400">穿透抽象分錄，觀察真實世界中的每一筆交易如何連鎖推動五大要素！</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400">關卡進度：</span>
+            <span id="scenario-case-badge" class="px-3 py-1 bg-purple-600 text-white rounded-lg text-xs font-bold">第 1 / 8 案</span>
+          </div>
+        </div>
+
+        <!-- 商業情境舞台 -->
+        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="flex items-start gap-4">
+            <div id="scenario-icon" class="w-14 h-14 rounded-2xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-3xl shrink-0">
+              ☕
+            </div>
+            <div class="space-y-1">
+              <div id="scenario-title" class="text-lg sm:text-xl font-bold text-white">
+                情境 1：小安掏出私房錢 100 萬，正式註冊「星航茗茶商行」
+              </div>
+              <p id="scenario-desc" class="text-sm text-slate-300 leading-relaxed">
+                小安將個人儲蓄新台幣 1,000,000 元存入剛剛開立的公司銀行籌備處帳戶，作為公司開辦資本。
+              </p>
+            </div>
+          </div>
+
+          <hr class="border-slate-800">
+
+          <!-- 任務互動：要素增減指認 -->
+          <div class="space-y-4">
+            <h4 class="text-xs uppercase font-bold tracking-wider text-indigo-300">
+              偵探任務：請推斷這筆交易對五大要素的雙重影響
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- 影響一 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
+                <span class="text-xs font-bold text-slate-400">第一影響要素與方向</span>
+                <div class="grid grid-cols-2 gap-2">
+                  <select id="scenario-elem-1" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400">
+                    <option value="">選擇要素...</option>
+                    <option value="asset">資產 (Assets)</option>
+                    <option value="liability">負債 (Liabilities)</option>
+                    <option value="equity">權益 (Equity)</option>
+                    <option value="revenue">收益 (Revenues)</option>
+                    <option value="expense">費損 (Expenses)</option>
+                  </select>
+                  <select id="scenario-dir-1" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400">
+                    <option value="">變動方向...</option>
+                    <option value="increase">增加 (+)</option>
+                    <option value="decrease">減少 (-)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 影響二 -->
+              <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-4 space-y-3">
+                <span class="text-xs font-bold text-slate-400">第二影響要素與方向</span>
+                <div class="grid grid-cols-2 gap-2">
+                  <select id="scenario-elem-2" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400">
+                    <option value="">選擇要素...</option>
+                    <option value="asset">資產 (Assets)</option>
+                    <option value="liability">負債 (Liabilities)</option>
+                    <option value="equity">權益 (Equity)</option>
+                    <option value="revenue">收益 (Revenues)</option>
+                    <option value="expense">費損 (Expenses)</option>
+                  </select>
+                  <select id="scenario-dir-2" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400">
+                    <option value="">變動方向...</option>
+                    <option value="increase">增加 (+)</option>
+                    <option value="decrease">減少 (-)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 本期淨利影響判斷 -->
+            <div class="bg-slate-800/40 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <span class="text-xs text-slate-300 font-medium">這筆交易是否直接影響本期「淨利（Net Income = 收益 - 費損）」？</span>
+              <div class="flex items-center gap-3">
+                <label class="flex items-center gap-1.5 text-xs cursor-pointer">
+                  <input type="radio" name="scenario-profit" value="yes" class="accent-indigo-500">
+                  <span>會影響損益</span>
+                </label>
+                <label class="flex items-center gap-1.5 text-xs cursor-pointer">
+                  <input type="radio" name="scenario-profit" value="no" class="accent-indigo-500">
+                  <span>不影響損益（資產負債表項目）</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+              <button onclick="prevScenarioCase()" id="scenario-prev-btn" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition disabled:opacity-40">
+                ← 上一個情境
+              </button>
+              <div class="flex items-center gap-3">
+                <button onclick="checkScenarioAnswer()" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition">
+                  驗證交易分析 ➔
+                </button>
+                <button onclick="nextScenarioCase()" id="scenario-next-btn" class="hidden px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition">
+                  下一個情境 →
+                </button>
+              </div>
+            </div>
+
+            <!-- 偵探案情解析回饋 -->
+            <div id="scenario-feedback" class="hidden rounded-xl border p-4 space-y-2">
+              <!-- 動態解析 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 模組 5：期末總挑戰與證書 (Final Exam & Certificate) -->
+    <!-- =============================================================== -->
+    <section id="tab-exam" class="hidden space-y-6">
+      <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+        <div class="max-w-2xl space-y-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">
+            <span>🎓 大一會計學實力驗證</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white">五大要素終極認證測驗</h2>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            綜合檢測您的五大要素定義理解、科目判斷敏銳度、恆等式運算及情境實務能力。完成測驗將依成績核發「會計星航認證證書」並提供弱點診斷報告！
+          </p>
+        </div>
+
+        <!-- 測驗進行區塊 -->
+        <div id="exam-quiz-container" class="space-y-6">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+            <span id="exam-progress-text">題號：第 1 / 10 題</span>
+            <span id="exam-timer-text">綜合實力鑑定</span>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8 space-y-5">
+            <div id="exam-q-badge" class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-indigo-500/20 text-indigo-300">
+              要素概念題
+            </div>
+            <h3 id="exam-q-title" class="text-lg sm:text-xl font-bold text-white leading-snug">
+              載入題目中...
+            </h3>
+
+            <!-- 選項列表 -->
+            <div id="exam-q-options" class="space-y-3">
+              <!-- 動態生成選項 -->
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button onclick="submitExamAnswer()" id="exam-submit-btn" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition">
+              確認此題答案
+            </button>
+          </div>
+        </div>
+
+        <!-- 測驗完成結果與證書面板 (預設隱藏) -->
+        <div id="exam-result-container" class="hidden space-y-6">
+          <div class="text-center py-6 space-y-2">
+            <div class="text-5xl animate-bounce-subtle">🎉</div>
+            <h3 class="text-2xl font-black text-white">恭喜完成五大要素實力評量！</h3>
+            <p class="text-sm text-slate-400">您在 10 道進階試題中的測驗表現如下：</p>
+          </div>
+
+          <!-- 成績卡與弱點分析雷達簡評 -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 text-center space-y-1">
+              <span class="text-xs text-slate-400 font-semibold">最終得分</span>
+              <div id="exam-final-score" class="text-4xl font-black text-emerald-400">90</div>
+              <span class="text-xs text-slate-500">滿分 100 分</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 text-center space-y-1">
+              <span class="text-xs text-slate-400 font-semibold">評級等級</span>
+              <div id="exam-rank-badge" class="text-4xl font-black text-amber-400">S 級</div>
+              <span class="text-xs text-slate-500">會計領航大師</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 text-center space-y-1">
+              <span class="text-xs text-slate-400 font-semibold">答題準確率</span>
+              <div id="exam-accuracy" class="text-4xl font-black text-indigo-400">90%</div>
+              <span class="text-xs text-slate-500">9 題正確 / 1 題需複習</span>
+            </div>
+          </div>
+
+          <!-- 證書生成區塊 -->
+          <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h4 class="text-lg font-bold text-white">🎓 通關學員專屬電子證書</h4>
+                <p class="text-xs text-slate-400">請輸入您的大名，點擊「更新證書」即可生成個人專屬榮譽證書！</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="text" id="cert-student-name" placeholder="輸入您的姓名（例：王小明）" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-400">
+                <button onclick="renderCertificate()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition">
+                  更新證書
+                </button>
+              </div>
+            </div>
+
+            <!-- Canvas 證書容器 -->
+            <div class="flex justify-center overflow-x-auto p-2 bg-slate-950 rounded-xl border border-slate-800">
+              <canvas id="cert-canvas" width="800" height="520" class="rounded-lg shadow-2xl max-w-full h-auto"></canvas>
+            </div>
+
+            <div class="flex justify-center gap-4 pt-2">
+              <button onclick="downloadCertificate()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                下載證書圖片 (PNG)
+              </button>
+              <button onclick="restartExam()" class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded-xl transition">
+                重新測驗挑戰滿分
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 底部版權與註釋 -->
+  <footer class="border-t border-slate-800 bg-slate-950/80 px-4 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>會計星航：五大要素大冒險 · 專為大學初級會計學（Financial Accounting）設計</div>
+      <div class="text-slate-600">依據國際財務報導準則 (IFRS) 及企業會計準則 (EAS) 要素框架設計</div>
+    </div>
+  </footer>
+
+  <!-- =============================================================== -->
+  <!-- JAVASCRIPT 全套互動邏輯、題庫與音效合成系統 -->
+  <!-- =============================================================== -->
+  <script>
+    /* ===============================================================
+       1. 音效合成系統 (Web Audio API Synthesizer)
+       =============================================================== */
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('sound-icon-on').classList.toggle('hidden', !audioEnabled);
+      document.getElementById('sound-icon-off').classList.toggle('hidden', audioEnabled);
+      if (audioEnabled) {
+        initAudio();
+        playTone(523.25, 0.1, 'sine');
+      }
+    }
+
+    function playTone(freq, duration = 0.15, type = 'sine', gainVal = 0.1) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio play failed', e);
+      }
+    }
+
+    function playSuccessSound(combo = 1) {
+      if (!audioEnabled) return;
+      const baseFreq = 440;
+      const step = Math.min(combo, 10) * 30;
+      playTone(baseFreq + step, 0.12, 'triangle', 0.12);
+      setTimeout(() => {
+        playTone((baseFreq + step) * 1.25, 0.18, 'sine', 0.12);
+      }, 70);
+    }
+
+    function playErrorSound() {
+      if (!audioEnabled) return;
+      playTone(180, 0.25, 'sawtooth', 0.08);
+      setTimeout(() => {
+        playTone(140, 0.3, 'sawtooth', 0.08);
+      }, 100);
+    }
+
+    function playBellSound() {
+      if (!audioEnabled) return;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        setTimeout(() => playTone(f, 0.5, 'sine', 0.07), i * 40);
+      });
+    }
+
+    /* ===============================================================
+       2. 會計學核心資料庫 (五大要素、科目、陷阱與解析)
+       =============================================================== */
+    const ELEMENTS_DATA = {
+      asset: {
+        id: 'asset',
+        name: '資產',
+        eng: 'Assets',
+        color: 'emerald',
+        icon: '💰',
+        normalBalance: '借方 (Debit)',
+        formula: '資產 = 負債 + 權益',
+        definition: '企業因過去交易或事項所控制之現時經濟資源。該資源預期於未來能為企業帶來經濟效益（現金流入或減少現金流出）。',
+        keyCriteria: [
+          '過去交易：必須已發生（不是未來打算購買）。',
+          '現時控制：企業擁有法定所有權或實質控制使用權。',
+          '未來經濟效益：預期可產生現金流入或節省成本。'
+        ],
+        traps: '【易錯地雷】「預付租金」、「預付保險費」雖然名為「費用」，但因為錢已預先付給對方，企業取得未來的服務使用權利，因此是【資產】而非費損！',
+        examples: '現金、銀行存款、應收帳款、存貨、預付租金、不動產廠房及設備、專利權。'
+      },
+      liability: {
+        id: 'liability',
+        name: '負債',
+        eng: 'Liabilities',
+        color: 'rose',
+        icon: '📑',
+        normalBalance: '貸方 (Credit)',
+        formula: '負債 = 資產 - 權益',
+        definition: '企業因過去交易或事項所產生之現時義務，清償該義務預期將導致具經濟效益之資源流出。',
+        keyCriteria: [
+          '過去交易：債務已經成立（例如已收到貨或已借到錢）。',
+          '現時義務：不可避免之法定責任或合約承諾。',
+          '資源流出：未來必須支付現金、移轉資產或提供勞務來償還。'
+        ],
+        traps: '【必考天王陷阱】「預收貨款」、「預收收入」看到「收入」兩個字千萬別選收益！因為錢雖然先收了，但商品或服務尚未交付，企業負有「未來交貨或退款的義務」，所以是【負債】！',
+        examples: '短期借款、應付帳款、應付薪資、預收貨款、應付租金、應付公司債。'
+      },
+      equity: {
+        id: 'equity',
+        name: '權益',
+        eng: 'Equity (Net Assets)',
+        color: 'purple',
+        icon: '🏛️',
+        normalBalance: '貸方 (Credit)',
+        formula: '權益 = 資產 - 負債（淨資產）',
+        definition: '企業資產扣除所有負債後之剩餘權益，代表出資者（股東/業主）對企業資產的終極所有權請求權。',
+        keyCriteria: [
+          '剩餘權利：清算時先還負債，剩下才歸權益持有人。',
+          '來源構成：業主投入資本（股本、資本公積）+ 經營累積（保留盈餘）。',
+          '受損益影響：本期淨利（收益 - 費損）最終會結轉匯入權益項下的保留盈餘。'
+        ],
+        traps: '【易錯地雷】「庫藏股票」是企業買回自家已發行的股票，屬於權益的「減項」（借方餘額），而不是資產！',
+        examples: '普通股股本、資本公積、保留盈餘、法定盈餘公積、本期淨利。'
+      },
+      revenue: {
+        id: 'revenue',
+        name: '收益 / 收入',
+        eng: 'Revenues / Income',
+        color: 'amber',
+        icon: '📈',
+        normalBalance: '貸方 (Credit)',
+        formula: '淨利 = 收益 - 費損（推動權益增加）',
+        definition: '於會計期間內經濟效益之增加（以資產流入或增值，或負債減少之方式），導致權益增加，但不包括業主增資。',
+        keyCriteria: [
+          '經濟效益流入：伴隨現金增加或應收款產生。',
+          '履約義務已滿足：商品已交付給顧客，或勞務已經提供完畢（權責已發生）。',
+          '增加權益：創造業主財富，使公司更有價值。'
+        ],
+        traps: '【易錯地雷】收到現金不等於收益！例如「借款收到現金」（負債增加）、「股東投資收到現金」（權益增加）、「預收顧客訂金」（負債增加），皆非收益！',
+        examples: '銷貨收入、服務收入、租金收入、利息收入、投資利益。'
+      },
+      expense: {
+        id: 'expense',
+        name: '費損 / 費用',
+        eng: 'Expenses',
+        color: 'orange',
+        icon: '📉',
+        normalBalance: '借方 (Debit)',
+        formula: '借方增加，最終減少權益',
+        definition: '於會計期間內經濟效益之減少（以資產流出、耗用，或負債產生之方式），導致權益減少，但不包括對業主分配（如發放股利）。',
+        keyCriteria: [
+          '資源消耗：為了賺取當期收益所付出的代價（配合原則 Matching Principle）。',
+          '效益已耗竭：該支出在當期已被消耗完畢，無未來經濟效益（若有未來效益則是資產）。',
+          '減少權益：使公司保留盈餘減少。'
+        ],
+        traps: '【易錯地雷】「發放現金股利」是將盈餘分配給股東，屬於「權益的直接扣減」，不是營業費損！「銷貨成本」代表售出商品的成本，是正折不扣的【費損】！',
+        examples: '銷貨成本、薪資費用、租金費用、折舊費用、水電瓦斯費、廣告費、利息費用。'
+      }
+    };
+
+    const ACCOUNT_DATABASE = [
+      // 資產 (Assets)
+      { name: '現金及約當現金', eng: 'Cash and Cash Equivalents', elem: 'asset', desc: '手頭現鈔、零用金及隨時可兌現之短期票券。', normal: '借方', tag: '流動資產' },
+      { name: '應收帳款', eng: 'Accounts Receivable', elem: 'asset', desc: '賒銷商品或提供勞務應向客戶收取的款項。', normal: '借方', tag: '流動資產' },
+      { name: '應收票據', eng: 'Notes Receivable', elem: 'asset', desc: '客戶開立承諾於特定日期付款之法定商業票據。', normal: '借方', tag: '流動資產' },
+      { name: '存貨', eng: 'Inventories', elem: 'asset', desc: '持以備銷之商品、產成品或生產中之原物料。', normal: '借方', tag: '流動資產' },
+      { name: '預付租金', eng: 'Prepaid Rent', elem: 'asset', desc: '已先支付未來租期的租金，享有使用房屋之經濟效益。', normal: '借方', tag: '陷阱! 資產而非費用' },
+      { name: '預付保險費', eng: 'Prepaid Insurance', elem: 'asset', desc: '預先支付之未來期間保險保障，屬流動資產。', normal: '借方', tag: '陷阱! 資產而非費用' },
+      { name: '用品盤存', eng: 'Supplies on Hand', elem: 'asset', desc: '購入尚未使用完畢之文具、紙張等辦公耗材。', normal: '借方', tag: '流動資產' },
+      { name: '不動產、廠房及設備', eng: 'Property, Plant and Equipment (PPE)', elem: 'asset', desc: '供營業長期使用之土地、房屋、機械設備。', normal: '借方', tag: '非流動資產' },
+      { name: '專利權', eng: 'Patents', elem: 'asset', desc: '法定享有之獨佔製造或銷售專利技術，屬無形資產。', normal: '借方', tag: '無形資產' },
+      { name: '商譽', eng: 'Goodwill', elem: 'asset', desc: '企業併購時支付超過被收購公司淨資產公允價值之溢價。', normal: '借方', tag: '無形資產' },
+      { name: '存出保證金', eng: 'Refundable Deposits', elem: 'asset', desc: '租屋或履約時押在對方處，未來期滿可收回之押金。', normal: '借方', tag: '非流動資產' },
+      { name: '累計折舊 (評價科目)', eng: 'Accumulated Depreciation', elem: 'asset', desc: '固定資產已提列折舊之累計總額（資產的抵銷減項，貸餘）。', normal: '貸方 (減項)', tag: '資產抵銷科目' },
+
+      // 負債 (Liabilities)
+      { name: '短期借款', eng: 'Short-term Borrowings', elem: 'liability', desc: '向銀行借入且須於一年內償還之款項。', normal: '貸方', tag: '流動負債' },
+      { name: '應付帳款', eng: 'Accounts Payable', elem: 'liability', desc: '向供應商賒購商品原料尚未支付之貨款。', normal: '貸方', tag: '流動負債' },
+      { name: '應付票據', eng: 'Notes Payable', elem: 'liability', desc: '企業開出承諾到期付款之本票或匯票。', normal: '貸方', tag: '流動負債' },
+      { name: '預收貨款', eng: 'Unearned Revenue / Contract Liability', elem: 'liability', desc: '已向顧客收錢但尚未發貨，負有交付商品之履約義務！', normal: '貸方', tag: '大魔王陷阱! 負債而非收入' },
+      { name: '預收租金', eng: 'Unearned Rent', elem: 'liability', desc: '房東預收房客未來租金，負有提供房屋使用之現時義務。', normal: '貸方', tag: '負債' },
+      { name: '應付薪資', eng: 'Salaries Payable', elem: 'liability', desc: '員工已提供勞務，公司結算後尚未發放之薪水。', normal: '貸方', tag: '流動負債' },
+      { name: '應付稅捐', eng: 'Taxes Payable', elem: 'liability', desc: '依法應繳納但尚未繳交國庫之營所稅、營業稅。', normal: '貸方', tag: '流動負債' },
+      { name: '應付公司債', eng: 'Bonds Payable', elem: 'liability', desc: '為向大眾籌資公開發行之長期債券。', normal: '貸方', tag: '非流動負債' },
+      { name: '長期借款', eng: 'Long-term Borrowings', elem: 'liability', desc: '償還期限超過一年以上之金融機構融資借款。', normal: '貸方', tag: '非流動負債' },
+      { name: '存入保證金', eng: 'Guarantee Deposits Received', elem: 'liability', desc: '向租客或包商收取之履約押金，合約結束需退還。', normal: '貸方', tag: '負債' },
+
+      // 權益 (Equity)
+      { name: '普通股股本', eng: 'Common Stock / Share Capital', elem: 'equity', desc: '股東依面額實際出資投資於公司的資本。', normal: '貸方', tag: '投入資本' },
+      { name: '資本公積', eng: 'Capital Surplus / Additional Paid-in Capital', elem: 'equity', desc: '發行股票時超過面額之溢價金額。', normal: '貸方', tag: '投入資本' },
+      { name: '保留盈餘', eng: 'Retained Earnings', elem: 'equity', desc: '公司歷年累積之稅後淨利未分配給股東之部分。', normal: '貸方', tag: '留存收益' },
+      { name: '法定盈餘公積', eng: 'Legal Reserve', elem: 'equity', desc: '公司法規定每年稅後淨利提撥 10% 限制分配之公積。', normal: '貸方', tag: '權益' },
+      { name: '本期淨利', eng: 'Net Income / Profit for the Year', elem: 'equity', desc: '本期收益減除費損後之經營成果，最終併入保留盈餘。', normal: '貸方', tag: '權益增加動能' },
+      { name: '庫藏股票 (評價科目)', eng: 'Treasury Stock', elem: 'equity', desc: '公司買回本公司已發行之股份，為權益之減項（借餘）。', normal: '借方 (減項)', tag: '權益抵銷科目' },
+
+      // 收益 (Revenues)
+      { name: '銷貨收入', eng: 'Sales Revenue', elem: 'revenue', desc: '銷售商品賺取的收入，為買賣業最核心收入。', normal: '貸方', tag: '營業收入' },
+      { name: '服務收入', eng: 'Service Revenue', elem: 'revenue', desc: '提供專業諮詢、運送或維修等勞務取得之收入。', normal: '貸方', tag: '營業收入' },
+      { name: '租金收入', eng: 'Rental Revenue', elem: 'revenue', desc: '出租閒置廠房、辦公室或設備給他人所賺取之對價。', normal: '貸方', tag: '營業或營業外' },
+      { name: '利息收入', eng: 'Interest Revenue', elem: 'revenue', desc: '將資金存放銀行或借貸他人所產生之利息回報。', normal: '貸方', tag: '營業外收益' },
+      { name: '處分資產利益', eng: 'Gain on Disposal of Assets', elem: 'revenue', desc: '出售機器設備價款高於帳面淨值之差額利益。', normal: '貸方', tag: '營業外收益' },
+      { name: '銷貨退回與折讓 (抵銷項)', eng: 'Sales Returns and Allowances', elem: 'revenue', desc: '商品瑕疵遭客戶退回或減價，為銷貨收入之抵減科目。', normal: '借方 (減項)', tag: '收益減項' },
+
+      // 費損 (Expenses)
+      { name: '銷貨成本', eng: 'Cost of Goods Sold (COGS)', elem: 'expense', desc: '已售出商品當初進貨或製造成本，為買賣業最主要費用！', normal: '借方', tag: '營業成本/費損' },
+      { name: '薪資費用', eng: 'Salaries Expense', elem: 'expense', desc: '支付給門市員工、管理階層的薪資酬勞。', normal: '借方', tag: '營業費用' },
+      { name: '租金費用', eng: 'Rent Expense', elem: 'expense', desc: '承租店面、辦公室所耗用當期支付之租金代價。', normal: '借方', tag: '營業費用' },
+      { name: '折舊費用', eng: 'Depreciation Expense', elem: 'expense', desc: '機器設備隨時間使用與耗損分攤於當期的成本。', normal: '借方', tag: '非現金營業費用' },
+      { name: '水電瓦斯費', eng: 'Utilities Expense', elem: 'expense', desc: '當期營業所耗用之水、電及燃料開銷。', normal: '借方', tag: '營業費用' },
+      { name: '廣告費用', eng: 'Advertising Expense', elem: 'expense', desc: '為推廣商品或行銷品牌所投入之廣告媒體支出。', normal: '借方', tag: '營業費用' },
+      { name: '利息費用', eng: 'Interest Expense', elem: 'expense', desc: '向銀行借款或發行債券所支付之資金成本。', normal: '借方', tag: '財務成本' },
+      { name: '所得稅費用', eng: 'Income Tax Expense', elem: 'expense', desc: '當期經營獲利應負擔之營利事業所得稅。', normal: '借方', tag: '費損' }
+    ];
+
+    /* ===============================================================
+       3. 頁籤切換與圖鑑展示邏輯
+       =============================================================== */
+    let currentTab = 'guide';
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      ['guide', 'arena', 'scale', 'scenario', 'exam'].forEach(t => {
+        const sec = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`nav-${t}`);
+        if (t === tabId) {
+          sec.classList.remove('hidden');
+          btn.className = 'nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow';
+        } else {
+          sec.classList.add('hidden');
+          btn.className = 'nav-btn px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60';
+        }
+      });
+
+      playTone(400, 0.05, 'sine', 0.05);
+
+      if (tabId === 'arena' && arenaQueue.length === 0) {
+        startArena();
+      } else if (tabId === 'scale') {
+        renderScaleVisual();
+      } else if (tabId === 'scenario') {
+        renderScenarioCase();
+      } else if (tabId === 'exam') {
+        if (examCurrentIndex === 0 && !examSubmitted) {
+          renderExamQuestion();
+        }
+      }
+    }
+
+    let selectedElementKey = 'asset';
+
+    function selectElementGuide(key) {
+      selectedElementKey = key;
+      const data = ELEMENTS_DATA[key];
+
+      ['asset', 'liability', 'equity', 'revenue', 'expense'].forEach(k => {
+        const card = document.getElementById(`guide-card-${k}`);
+        if (k === key) {
+          card.classList.add('ring-2', 'ring-indigo-400', 'bg-slate-800');
+        } else {
+          card.classList.remove('ring-2', 'ring-indigo-400', 'bg-slate-800');
+        }
+      });
+
+      const container = document.getElementById('element-detail-container');
+      container.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/80 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="text-4xl p-3 bg-slate-900 rounded-2xl border border-slate-700">${data.icon}</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-2xl font-black text-white">${data.name}</h3>
+                <span class="text-sm font-semibold text-slate-400">(${data.eng})</span>
+              </div>
+              <p class="text-xs text-indigo-300 font-mono mt-0.5">恆等式角色：${data.formula}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400">正常餘額方向：</span>
+            <span class="px-3 py-1 rounded-lg text-xs font-black bg-slate-900 border border-slate-700 text-white">${data.normalBalance}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">📖 標準會計權威定義</h4>
+              <p class="text-sm text-slate-200 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
+                ${data.definition}
+              </p>
+            </div>
+
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">⚡ 辨識三大關鍵要件</h4>
+              <ul class="space-y-2">
+                ${data.keyCriteria.map(c => `
+                  <li class="flex items-start gap-2 text-xs text-slate-300 bg-slate-900/30 p-2.5 rounded-lg border border-slate-800">
+                    <span class="text-indigo-400">✔</span>
+                    <span>${c}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="bg-rose-950/30 border border-rose-500/40 rounded-xl p-4">
+              <h4 class="text-xs font-bold text-rose-300 flex items-center gap-1.5 mb-1.5">
+                <span>🚨</span><span>大一新手避坑陷阱指南</span>
+              </h4>
+              <p class="text-xs text-rose-100/90 leading-relaxed">
+                ${data.traps}
+              </p>
+            </div>
+
+            <div>
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">📋 本要素經典範例科目</h4>
+              <p class="text-xs text-slate-300 bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+                ${data.examples}
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      playTone(480, 0.08, 'sine', 0.06);
+    }
+
+    function renderAccountList(list = ACCOUNT_DATABASE) {
+      const grid = document.getElementById('account-grid');
+      grid.innerHTML = list.map(item => {
+        const elemData = ELEMENTS_DATA[item.elem];
+        return `
+          <div class="bg-slate-900/80 border border-slate-800 hover:border-slate-600 rounded-xl p-3.5 space-y-2 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-sm">${item.name}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-${elemData.color}-400">
+                ${elemData.name}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono truncate">${item.eng}</div>
+            <p class="text-[11px] text-slate-300 leading-snug line-clamp-2">${item.desc}</p>
+            <div class="flex items-center justify-between pt-1 border-t border-slate-800/80 text-[10px] text-slate-400">
+              <span>正常：<strong class="text-slate-200">${item.normal}</strong></span>
+              <span class="text-indigo-300">${item.tag}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterAccounts() {
+      const q = document.getElementById('account-search-input').value.trim().toLowerCase();
+      if (!q) {
+        renderAccountList(ACCOUNT_DATABASE);
+        return;
+      }
+      const filtered = ACCOUNT_DATABASE.filter(a =>
+        a.name.toLowerCase().includes(q) ||
+        a.eng.toLowerCase().includes(q) ||
+        a.desc.toLowerCase().includes(q) ||
+        a.tag.toLowerCase().includes(q) ||
+        ELEMENTS_DATA[a.elem].name.includes(q)
+      );
+      renderAccountList(filtered);
+    }
+
+    /* ===============================================================
+       4. 模組 2：科目速配大作戰 (Account Sorting Arena) 邏輯
+       =============================================================== */
+    let arenaQueue = [];
+    let arenaCurrentIndex = 0;
+    let arenaScore = 0;
+    let arenaCombo = 0;
+    const ARENA_TOTAL = 20;
+
+    function startArena(resetProgress = true) {
+      arenaQueue = [...ACCOUNT_DATABASE].sort(() => 0.5 - Math.random()).slice(0, ARENA_TOTAL);
+      arenaCurrentIndex = 0;
+      if (resetProgress) {
+        arenaScore = 0;
+        arenaCombo = 0;
+      }
+      document.getElementById('arena-score').innerText = arenaScore;
+      document.getElementById('arena-combo').innerText = arenaCombo;
+      document.getElementById('arena-feedback').classList.add('hidden');
+      renderArenaCard();
+    }
+
+    function renderArenaCard() {
+      if (arenaCurrentIndex >= arenaQueue.length) {
+        playBellSound();
+        addStars(5);
+        document.getElementById('arena-card-name').innerText = '🎉 恭喜完成科目速配挑戰！';
+        document.getElementById('arena-card-eng').innerText = `最終得分：${arenaScore} 分 ｜ 最高連擊：${arenaCombo}`;
+        document.getElementById('arena-card-hint').innerText = '太棒了！您對會計科目的敏銳度大幅提升！可前往「會計天平」或「商業情境」進行下個階段的探索！';
+        document.getElementById('arena-progress').innerText = `${ARENA_TOTAL} / ${ARENA_TOTAL}`;
+        return;
+      }
+
+      const current = arenaQueue[arenaCurrentIndex];
+      document.getElementById('arena-card-name').innerText = current.name;
+      document.getElementById('arena-card-eng').innerText = current.eng;
+      document.getElementById('arena-card-hint').innerText = `提示特性：${current.desc}`;
+      document.getElementById('arena-progress').innerText = `${arenaCurrentIndex + 1} / ${arenaQueue.length}`;
+      document.getElementById('arena-card-badge').innerText = `第 ${arenaCurrentIndex + 1} 題 · 點擊下方按鈕或鍵盤 1~5`;
+    }
+
+    function submitArenaAnswer(userElem) {
+      if (arenaCurrentIndex >= arenaQueue.length) return;
+      const current = arenaQueue[arenaCurrentIndex];
+      const feedback = document.getElementById('arena-feedback');
+
+      if (userElem === current.elem) {
+        arenaCombo++;
+        const gain = 100 + arenaCombo * 15;
+        arenaScore += gain;
+        playSuccessSound(arenaCombo);
+        addStars(1);
+
+        document.getElementById('arena-score').innerText = arenaScore;
+        document.getElementById('arena-combo').innerText = arenaCombo;
+
+        feedback.className = 'rounded-2xl border p-4 bg-emerald-950/60 border-emerald-500/50 text-emerald-200 text-xs flex items-center justify-between';
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-xl">✅</span>
+            <span>太棒了！<strong>${current.name}</strong> 確實屬於【${ELEMENTS_DATA[current.elem].name}】（${current.normal}正常餘額）！+${gain} 分</span>
+          </div>
+          <span class="font-bold text-amber-300">Combo x${arenaCombo}</span>
+        `;
+        feedback.classList.remove('hidden');
+
+        arenaCurrentIndex++;
+        setTimeout(() => {
+          renderArenaCard();
+        }, 400);
+
+      } else {
+        arenaCombo = 0;
+        document.getElementById('arena-combo').innerText = 0;
+        playErrorSound();
+
+        const correctElem = ELEMENTS_DATA[current.elem];
+        const chosenElem = ELEMENTS_DATA[userElem];
+
+        feedback.className = 'rounded-2xl border p-4 bg-rose-950/80 border-rose-500 text-rose-100 text-xs space-y-2';
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2 font-bold text-sm text-rose-300">
+            <span>❌</span>
+            <span>答錯囉！你選了【${chosenElem.name}】，但「${current.name}」正解是【${correctElem.name}】！</span>
+          </div>
+          <p class="text-rose-200/90 leading-relaxed bg-slate-900/60 p-3 rounded-lg">
+            💡 <strong>深度解析：</strong>${current.desc}<br>
+            ${correctElem.traps || ''}
+          </p>
+          <div class="text-[11px] text-slate-300">請仔細閱讀上方解析後，點擊正解「${correctElem.name}」按鈕繼續推進！</div>
+        `;
+        feedback.classList.remove('hidden');
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (currentTab !== 'arena') return;
+      if (['1', '2', '3', '4', '5'].includes(e.key)) {
+        const map = { '1': 'asset', '2': 'liability', '3': 'equity', '4': 'revenue', '5': 'expense' };
+        submitArenaAnswer(map[e.key]);
+      }
+    });
+
+    /* ===============================================================
+       5. 模組 3：會計恆等式動態天平 (Balance Scale Simulator)
+       =============================================================== */
+    let scaleMode = 'basic';
+
+    function setScaleMode(mode) {
+      scaleMode = mode;
+      const btnBasic = document.getElementById('scale-mode-basic');
+      const btnExpanded = document.getElementById('scale-mode-expanded');
+      const expandedSliders = document.getElementById('expanded-sliders');
+      const rightTitle = document.getElementById('right-pan-title');
+
+      if (mode === 'basic') {
+        btnBasic.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow';
+        btnExpanded.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white';
+        expandedSliders.classList.add('hidden');
+        expandedSliders.classList.remove('grid');
+        rightTitle.innerText = '右方：負債 + 權益';
+      } else {
+        btnBasic.className = 'px-3 py-1.5 rounded-lg text-slate-400 hover:text-white';
+        btnExpanded.className = 'px-3 py-1.5 rounded-lg bg-indigo-600 text-white shadow';
+        expandedSliders.classList.remove('hidden');
+        expandedSliders.classList.add('grid');
+        rightTitle.innerText = '右方：負債 + 權益 + (收益 - 費損)';
+      }
+      updateScaleFromSliders();
+    }
+
+    function updateScaleFromSliders() {
+      const asset = parseInt(document.getElementById('slider-asset').value, 10);
+      const liability = parseInt(document.getElementById('slider-liability').value, 10);
+      const equity = parseInt(document.getElementById('slider-equity').value, 10);
+
+      document.getElementById('slider-asset-label').innerText = '$' + asset.toLocaleString();
+      document.getElementById('slider-liability-label').innerText = '$' + liability.toLocaleString();
+      document.getElementById('slider-equity-label').innerText = '$' + equity.toLocaleString();
+
+      let rightTotal = liability + equity;
+
+      if (scaleMode === 'expanded') {
+        const rev = parseInt(document.getElementById('slider-revenue').value, 10);
+        const exp = parseInt(document.getElementById('slider-expense').value, 10);
+        document.getElementById('slider-revenue-label').innerText = '$' + rev.toLocaleString();
+        document.getElementById('slider-expense-label').innerText = '$' + exp.toLocaleString();
+        rightTotal = liability + equity + (rev - exp);
+      }
+
+      renderScaleVisual(asset, rightTotal);
+    }
+
+    function renderScaleVisual(leftVal = 100000, rightVal = 100000) {
+      document.getElementById('val-asset-display').innerText = '$ ' + leftVal.toLocaleString();
+      document.getElementById('val-right-display').innerText = '$ ' + rightVal.toLocaleString();
+
+      const diff = leftVal - rightVal;
+      const beam = document.getElementById('scale-beam');
+      const panLeft = document.getElementById('pan-left');
+      const panRight = document.getElementById('pan-right');
+      const statusBadge = document.getElementById('scale-status-badge');
+      const diffText = document.getElementById('scale-diff-text');
+
+      let maxTilt = 16;
+      let angle = (rightVal - leftVal) / 8000;
+      if (angle > maxTilt) angle = maxTilt;
+      if (angle < -maxTilt) angle = -maxTilt;
+
+      beam.style.transform = `rotate(${angle}deg)`;
+      panLeft.style.transform = `rotate(${-angle}deg)`;
+      panRight.style.transform = `rotate(${-angle}deg)`;
+
+      if (Math.abs(diff) === 0) {
+        statusBadge.className = 'absolute top-4 px-4 py-1.5 rounded-full text-xs font-black tracking-wide bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5';
+        statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>完美平衡 (Balanced)</span>`;
+        diffText.innerText = `左方資產 ($${leftVal.toLocaleString()}) ＝ 右方來源 ($${rightVal.toLocaleString()}) ｜ 會計恆等成立！`;
+        diffText.className = 'mt-28 text-xs text-emerald-400 font-mono font-bold';
+      } else {
+        const heavier = diff > 0 ? '左盤過重（資產大於負債權益）' : '右盤過重（負債權益大於資產）';
+        statusBadge.className = 'absolute top-4 px-4 py-1.5 rounded-full text-xs font-black tracking-wide bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1.5';
+        statusBadge.innerHTML = `<span>⚠️ 天平失衡！${heavier}</span>`;
+        diffText.innerText = `失衡差額：$${Math.abs(diff).toLocaleString()} ｜ 請調整數值或點擊「自動平衡」`;
+        diffText.className = 'mt-28 text-xs text-rose-400 font-mono font-bold';
+      }
+    }
+
+    function autoBalanceScale() {
+      const asset = parseInt(document.getElementById('slider-asset').value, 10);
+      const liability = parseInt(document.getElementById('slider-liability').value, 10);
+
+      if (scaleMode === 'basic') {
+        const requiredEquity = Math.max(0, asset - liability);
+        document.getElementById('slider-equity').value = requiredEquity;
+      } else {
+        const rev = parseInt(document.getElementById('slider-revenue').value, 10);
+        const exp = parseInt(document.getElementById('slider-expense').value, 10);
+        const requiredEquity = Math.max(0, asset - liability - (rev - exp));
+        document.getElementById('slider-equity').value = requiredEquity;
+      }
+
+      updateScaleFromSliders();
+      playBellSound();
+      addStars(1);
+    }
+
+    const SCALE_QUIZZES = [
+      {
+        q: '「星航科技」期初資產為 $180,000，負債為 $70,000。若本期資產增加 $50,000，負債減少 $20,000，且期間無增資或分配股利，請問該公司本期「淨利 (Net Income)」為多少元？',
+        ans: 70000,
+        exp: '期末資產 = $180,000 + $50,000 = $230,000；期末負債 = $70,000 - $20,000 = $50,000。依恆等式：期末權益 = $230,000 - $50,000 = $180,000。期初權益為 $180,000 - $70,000 = $110,000。權益變動 = $180,000 - $110,000 = $70,000，即為本期淨利！'
+      },
+      {
+        q: '「晨曦咖啡」本期營業收益為 $240,000，營業費損為 $150,000。已知期末負債為 $80,000，期末業主權益總額為 $190,000，請問該咖啡廳的期末「資產總額」應為多少元？',
+        ans: 270000,
+        exp: '根據會計基本恆等式：資產 = 負債 + 權益。因此期末資產總額 = $80,000 + $190,000 = $270,000！（收益與費損已包含於期末權益中）'
+      },
+      {
+        q: '某零售商店年底資產總額為 $350,000，權益為 $150,000。若已知該公司長期借款為 $120,000，其餘皆為流動負債，請問其「流動負債」金額為多少元？',
+        ans: 80000,
+        exp: '負債總額 = 資產 ($350,000) - 權益 ($150,000) = $200,000。流動負債 = 負債總額 ($200,000) - 長期借款 ($120,000) = $80,000。'
+      }
+    ];
+    let currentScaleQuiz = null;
+
+    function loadScaleQuiz() {
+      const card = document.getElementById('scale-quiz-card');
+      card.classList.remove('hidden');
+      currentScaleQuiz = SCALE_QUIZZES[Math.floor(Math.random() * SCALE_QUIZZES.length)];
+      document.getElementById('scale-quiz-question').innerText = currentScaleQuiz.q;
+      document.getElementById('scale-quiz-input').value = '';
+      document.getElementById('scale-quiz-feedback').innerHTML = '';
+      playTone(550, 0.1, 'sine', 0.08);
+    }
+
+    function checkScaleQuizAnswer() {
+      if (!currentScaleQuiz) return;
+      const userVal = parseInt(document.getElementById('scale-quiz-input').value.trim(), 10);
+      const feedback = document.getElementById('scale-quiz-feedback');
+
+      if (userVal === currentScaleQuiz.ans) {
+        playBellSound();
+        addStars(3);
+        feedback.className = 'text-xs text-emerald-300 font-bold bg-emerald-950/70 p-3 rounded-lg border border-emerald-500/50 mt-2';
+        feedback.innerHTML = `🎉 恭喜算對了！正解就是 $${currentScaleQuiz.ans.toLocaleString()}！<br>📖 <strong>詳解：</strong>${currentScaleQuiz.exp}`;
+      } else {
+        playErrorSound();
+        feedback.className = 'text-xs text-rose-300 font-bold bg-rose-950/70 p-3 rounded-lg border border-rose-500/50 mt-2';
+        feedback.innerHTML = `❌ 金額不太對喔！請再仔細檢查計算。提示：資產 = 負債 + 權益 + (收益 - 費損)。`;
+      }
+    }
+
+    /* ===============================================================
+       6. 模組 4：商業情境名偵探 (Business Scenario Detective)
+       =============================================================== */
+    const SCENARIOS = [
+      {
+        id: 1,
+        title: '情境 1：小安掏出私房錢 100 萬，正式註冊創立「星航茗茶」',
+        desc: '小安將個人儲蓄新台幣 1,000,000 元存入剛剛開立的公司銀行帳戶，作為初創普通股資本。',
+        icon: '💼',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'equity', dir2: 'increase',
+        profit: 'no',
+        explanation: '【資產增加（銀行存款）】同時【權益增加（普通股股本）】。此為股東投資，兩邊同增 100 萬，恆等式平衡，不影響當期損益（不是營業收益）。'
+      },
+      {
+        id: 2,
+        title: '情境 2：向商業銀行申請短期融資借款 50 萬元入帳',
+        desc: '為採購生財設備，向第一銀行簽約借款 500,000 元，款項已全數撥入公司銀行帳戶。',
+        icon: '🏦',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'liability', dir2: 'increase',
+        profit: 'no',
+        explanation: '【資產增加（銀行存款）】同時【負債增加（短期借款）】。借來的錢也是公司控制的經濟資源，但附帶償還義務，不影響損益。'
+      },
+      {
+        id: 3,
+        title: '情境 3：以銀行存款 30 萬元購買全自動封口機與急速製冰機',
+        desc: '開立支票支付生財器具款項 300,000 元，機器已安裝於門市並可隨時投入營運。',
+        icon: '⚙️',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'asset', dir2: 'decrease',
+        profit: 'no',
+        explanation: '【資產一增一減的內部交換】！【資產增加（設備）】同時【資產減少（銀行存款）】。資產總額不變，天平依然平衡。'
+      },
+      {
+        id: 4,
+        title: '情境 4：向茶農賒購高品質高山茶葉原料 8 萬元',
+        desc: '茶葉已驗收入庫，雙方約定於次月 15 日再行付款。',
+        icon: '🍃',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'liability', dir2: 'increase',
+        profit: 'no',
+        explanation: '【資產增加（存貨）】同時【負債增加（應付帳款）】。雖然還沒付現金，但原料已由公司控制，債務也已成立，兩邊同增 8 萬！'
+      },
+      {
+        id: 5,
+        title: '情境 5：開幕當天銷售現泡手搖飲，收到現金 25,000 元',
+        desc: '門市顧客絡繹不絕，收銀機結算當日全數為現金交易入帳。',
+        icon: '🥤',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'revenue', dir2: 'increase',
+        profit: 'yes',
+        explanation: '【資產增加（現金）】同時【收益增加（銷貨收入）】！收益會直接增加本期淨利，進而使權益增加。'
+      },
+      {
+        id: 6,
+        title: '情境 6：附近大專院校學生會預購特約儲值卡 10,000 元現款',
+        desc: '學生會預先支付現金儲值，約定下週迎新活動時再來取用等值飲料。',
+        icon: '💳',
+        elem1: 'asset', dir1: 'increase',
+        elem2: 'liability', dir2: 'increase',
+        profit: 'no',
+        explanation: '【大一必考魔王題！】收到現金【資產增加】，但飲料「尚未交付」，公司負有交付勞務的現時義務，因此貸記【負債（預收貨款）】，不影響當期損益！'
+      },
+      {
+        id: 7,
+        title: '情境 7：月底開立支票支付門市工讀生薪資 30,000 元',
+        desc: '結算當月計時人員出勤工時，全額由銀行帳戶轉帳付訖。',
+        icon: '💰',
+        elem1: 'asset', dir1: 'decrease',
+        elem2: 'expense', dir2: 'increase',
+        profit: 'yes',
+        explanation: '【資產減少（銀行存款）】同時【費損增加（薪資費用）】！費損增加會減少本期淨利，擴展恆等式資產 = 負債 + 權益 - 費損，兩邊維持相等。'
+      },
+      {
+        id: 8,
+        title: '情境 8：以銀行存款開立支票，償還情境 4 的茶葉賒購欠款 8 萬元',
+        desc: '如期匯款清償積欠茶農之供應商貨款。',
+        icon: '🤝',
+        elem1: 'asset', dir1: 'decrease',
+        elem2: 'liability', dir2: 'decrease',
+        profit: 'no',
+        explanation: '【資產減少（銀行存款）】同時【負債減少（應付帳款）】。義務解除，天平兩端各減 8 萬元，不屬於費損，不影響損益。'
+      }
+    ];
+    let currentScenarioIndex = 0;
+
+    function renderScenarioCase() {
+      const c = SCENARIOS[currentScenarioIndex];
+      document.getElementById('scenario-case-badge').innerText = `第 ${c.id} / ${SCENARIOS.length} 案`;
+      document.getElementById('scenario-icon').innerText = c.icon;
+      document.getElementById('scenario-title').innerText = c.title;
+      document.getElementById('scenario-desc').innerText = c.desc;
+
+      document.getElementById('scenario-elem-1').value = '';
+      document.getElementById('scenario-dir-1').value = '';
+      document.getElementById('scenario-elem-2').value = '';
+      document.getElementById('scenario-dir-2').value = '';
+      const radios = document.getElementsByName('scenario-profit');
+      radios.forEach(r => r.checked = false);
+
+      document.getElementById('scenario-feedback').classList.add('hidden');
+      document.getElementById('scenario-next-btn').classList.add('hidden');
+      document.getElementById('scenario-prev-btn').disabled = (currentScenarioIndex === 0);
+    }
+
+    function prevScenarioCase() {
+      if (currentScenarioIndex > 0) {
+        currentScenarioIndex--;
+        renderScenarioCase();
+        playTone(450, 0.05, 'sine', 0.05);
+      }
+    }
+
+    function nextScenarioCase() {
+      if (currentScenarioIndex < SCENARIOS.length - 1) {
+        currentScenarioIndex++;
+        renderScenarioCase();
+        playTone(500, 0.05, 'sine', 0.05);
+      }
+    }
+
+    function checkScenarioAnswer() {
+      const c = SCENARIOS[currentScenarioIndex];
+      const e1 = document.getElementById('scenario-elem-1').value;
+      const d1 = document.getElementById('scenario-dir-1').value;
+      const e2 = document.getElementById('scenario-elem-2').value;
+      const d2 = document.getElementById('scenario-dir-2').value;
+
+      const profitRadios = document.getElementsByName('scenario-profit');
+      let chosenProfit = '';
+      for (let r of profitRadios) {
+        if (r.checked) chosenProfit = r.value;
+      }
+
+      if (!e1 || !d1 || !e2 || !d2 || !chosenProfit) {
+        alert('請完整選擇兩個影響要素、變動方向，以及是否影響損益！');
+        return;
+      }
+
+      const match1 = (e1 === c.elem1 && d1 === c.dir1 && e2 === c.elem2 && d2 === c.dir2);
+      const match2 = (e1 === c.elem2 && d1 === c.dir2 && e2 === c.elem1 && d2 === c.dir1);
+      const profitCorrect = (chosenProfit === c.profit);
+
+      const feedback = document.getElementById('scenario-feedback');
+
+      if ((match1 || match2) && profitCorrect) {
+        playBellSound();
+        addStars(2);
+        feedback.className = 'rounded-xl border p-4 space-y-2 bg-emerald-950/70 border-emerald-500 text-emerald-200 text-xs';
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2 font-bold text-sm text-emerald-300">
+            <span>🎉</span><span>案情突破！推理完全正確！</span>
+          </div>
+          <p class="leading-relaxed">${c.explanation}</p>
+        `;
+        feedback.classList.remove('hidden');
+        document.getElementById('scenario-next-btn').classList.remove('hidden');
+      } else {
+        playErrorSound();
+        feedback.className = 'rounded-xl border p-4 space-y-2 bg-rose-950/70 border-rose-500 text-rose-200 text-xs';
+        feedback.innerHTML = `
+          <div class="flex items-center gap-2 font-bold text-sm text-rose-300">
+            <span>🧐</span><span>偵探，這個推理還有漏洞喔！</span>
+          </div>
+          <p class="leading-relaxed">
+            提示：思考這筆交易中，企業真正得到的東西是什麼？付出了什麼承諾或資源？<br>
+            是否直接牽涉到了為顧客服務（收益）或經營耗費（費損）？
+          </p>
+        `;
+        feedback.classList.remove('hidden');
+      }
+    }
+
+    /* ===============================================================
+       7. 模組 5：期末總挑戰與認證證書 (Final Exam & Certificate)
+       =============================================================== */
+    const EXAM_QUESTIONS = [
+      {
+        badge: '要素概念題',
+        q: '1. 依據會計準則對「資產 (Assets)」之定義，下列敘述何者最為精確？',
+        options: [
+          'A. 企業過去交易產生、現時控制且預期能帶來未來經濟效益之資源',
+          'B. 企業目前帳戶中所有存放的現金額度與有價證券總和',
+          'C. 企業未來打算採購以提升營業額的所有生產設備總額',
+          'D. 企業所有的營業收入扣除當期營業費用後之剩餘利潤'
+        ],
+        ans: 0,
+        exp: '資產三要素：過去交易、現時控制、未來經濟效益。'
+      },
+      {
+        badge: '科目歸屬陷阱題',
+        q: '2. 某公司預收客戶一年期保養服務合約款項 $120,000，此時應貸記何種會計科目？其要素屬性為何？',
+        options: [
+          'A. 服務收入 (Service Revenue)；屬於「收益」',
+          'B. 預收貨款/合約負債 (Unearned Revenue)；屬於「負債」',
+          'C. 應收帳款 (Accounts Receivable)；屬於「資產」',
+          'D. 保留盈餘 (Retained Earnings)；屬於「權益」'
+        ],
+        ans: 1,
+        exp: '因服務尚未提供，收取現款同時承擔履約義務，屬於負債！'
+      },
+      {
+        badge: '恆等式推導題',
+        q: '3. 若某企業期初資產為 $500,000，負債為 $200,000。本期資產增加 $100,000，負債增加 $40,000，期間無增資或發放股利，請問該公司本期淨利為多少？',
+        options: [
+          'A. $40,000',
+          'B. $60,000',
+          'C. $140,000',
+          'D. $160,000'
+        ],
+        ans: 1,
+        exp: '期末資產 $600k，期末負債 $240k，期末權益 = $360k。期初權益為 $300k。本期權益變動即淨利 = $360k - $300k = $60,000。'
+      },
+      {
+        badge: '科目評價分析',
+        q: '4. 「累計折舊 (Accumulated Depreciation)」在財務報表中的角色為何？',
+        options: [
+          'A. 是獨立的營業費用，正常餘額在借方',
+          'B. 是負債類科目，代表未來必須償還的修繕債務',
+          'C. 是不動產廠房及設備的評價減項（抵銷科目），正常餘額在貸方',
+          'D. 是業主權益科目，代表提撥的汰舊換新公積'
+        ],
+        ans: 2,
+        exp: '累計折舊為資產抵銷科目，用於計算設備之「帳面淨值 (Book Value)」。'
+      },
+      {
+        badge: '借貸法則關聯題',
+        q: '5. 在會計擴展恆等式中，「資產 + 費損 = 負債 + 權益 + 收益」，這合理解釋了為什麼：',
+        options: [
+          'A. 資產與費損的正常增加皆記錄在「借方 (Debit)」',
+          'B. 費損是企業的最重要資產',
+          'C. 負債與費損的借貸方向完全一致',
+          'D. 收益的增加必須記錄在借方'
+        ],
+        ans: 0,
+        exp: '等號左邊（資產、費損）增加在借方；等號右邊（負債、權益、收益）增加在貸方。'
+      },
+      {
+        badge: '商業交易影響題',
+        q: '6. 企業以現金支付「上個月已認列之應付薪資」，對會計恆等式的影響為：',
+        options: [
+          'A. 資產減少，費損增加',
+          'B. 資產減少，負債減少',
+          'C. 資產一增一減內部交換',
+          'D. 負債減少，權益減少'
+        ],
+        ans: 1,
+        exp: '薪資費用上個月已認列，付現時是借：應付薪資（負債減少），貸：現金（資產減少）。'
+      },
+      {
+        badge: '權益本質題',
+        q: '7. 下列何者「不屬於」會計學上的業主權益 (Equity) 範疇？',
+        options: [
+          'A. 普通股股本 (Common Stock)',
+          'B. 資本公積 (Capital Surplus)',
+          'C. 應付公司債 (Bonds Payable)',
+          'D. 未分配保留盈餘 (Retained Earnings)'
+        ],
+        ans: 2,
+        exp: '應付公司債是向大眾借款承擔的長期債務，屬於「非流動負債」而非權益！'
+      },
+      {
+        badge: '科目易混辨析',
+        q: '8. 「預付保險費 (Prepaid Insurance)」應歸屬於哪一類會計要素？',
+        options: [
+          'A. 費損 (Expenses)',
+          'B. 資產 (Assets)',
+          'C. 負債 (Liabilities)',
+          'D. 權益 (Equity)'
+        ],
+        ans: 1,
+        exp: '因為具有未來享受保險保障的經濟權利，屬於流動資產。'
+      },
+      {
+        badge: '收益認列原則',
+        q: '9. 根據權責發生制，企業何時方能正式認列「銷貨收入」？',
+        options: [
+          'A. 收到客戶現金訂金的當天',
+          'B. 與客戶簽訂採購意向書時',
+          'C. 商品履約義務已滿足（商品控制權已移轉給客戶）時',
+          'D. 年底編制財務報表時一次認列'
+        ],
+        ans: 2,
+        exp: '收入認列的核心在於「履約義務之滿足與商品控制權之移轉」。'
+      },
+      {
+        badge: '股利會計本質',
+        q: '10. 公司董事會決議並發放「現金股利 (Cash Dividends)」給全體股東，本質上屬於：',
+        options: [
+          'A. 當期的營業費用（減少本期淨利）',
+          'B. 保留盈餘的直接分配與減少（權益直接扣減）',
+          'C. 營業外損失（業外支出）',
+          'D. 資產的內部轉移'
+        ],
+        ans: 1,
+        exp: '股利是將公司獲利成果分配給出資者，直接扣減權益，絕非營業費損！'
+      }
+    ];
+
+    let examCurrentIndex = 0;
+    let examUserAnswers = new Array(EXAM_QUESTIONS.length).fill(-1);
+    let examSubmitted = false;
+
+    function renderExamQuestion() {
+      const q = EXAM_QUESTIONS[examCurrentIndex];
+      document.getElementById('exam-progress-text').innerText = `題號：第 ${examCurrentIndex + 1} / ${EXAM_QUESTIONS.length} 題`;
+      document.getElementById('exam-q-badge').innerText = q.badge;
+      document.getElementById('exam-q-title').innerText = q.q;
+
+      const optionsDiv = document.getElementById('exam-q-options');
+      optionsDiv.innerHTML = q.options.map((opt, i) => {
+        const isChecked = examUserAnswers[examCurrentIndex] === i;
+        return `
+          <label class="flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+            isChecked ? 'bg-indigo-950/60 border-indigo-500 ring-1 ring-indigo-400' : 'bg-slate-800/60 border-slate-700 hover:bg-slate-800'
+          }">
+            <input type="radio" name="exam-option" value="${i}" ${isChecked ? 'checked' : ''} onchange="selectExamOption(${i})" class="accent-indigo-500 w-4 h-4">
+            <span class="text-sm text-slate-200 font-medium">${opt}</span>
+          </label>
+        `;
+      }).join('');
+
+      document.getElementById('exam-submit-btn').innerText =
+        (examCurrentIndex === EXAM_QUESTIONS.length - 1) ? '送出整份測驗並核算成績' : '下一題 ➔';
+    }
+
+    function selectExamOption(optIndex) {
+      examUserAnswers[examCurrentIndex] = optIndex;
+      playTone(500, 0.04, 'sine', 0.04);
+      renderExamQuestion();
+    }
+
+    function submitExamAnswer() {
+      if (examUserAnswers[examCurrentIndex] === -1) {
+        alert('請先選擇一個選項再繼續！');
+        return;
+      }
+
+      if (examCurrentIndex < EXAM_QUESTIONS.length - 1) {
+        examCurrentIndex++;
+        renderExamQuestion();
+        playTone(450, 0.05, 'sine', 0.05);
+      } else {
+        gradeExam();
+      }
+    }
+
+    function gradeExam() {
+      examSubmitted = true;
+      let correctCount = 0;
+      EXAM_QUESTIONS.forEach((q, idx) => {
+        if (examUserAnswers[idx] === q.ans) correctCount++;
+      });
+
+      const score = Math.round((correctCount / EXAM_QUESTIONS.length) * 100);
+      let rank = 'S 級';
+      let title = '會計領航大師';
+      if (score < 60) {
+        rank = 'C 級';
+        title = '會計實習新手';
+      } else if (score < 80) {
+        rank = 'B 級';
+        title = '會計進階達人';
+      } else if (score < 90) {
+        rank = 'A 級';
+        title = '財務精算菁英';
+      }
+
+      document.getElementById('exam-final-score').innerText = score;
+      document.getElementById('exam-rank-badge').innerText = rank;
+      document.getElementById('exam-accuracy').innerText = `${score}%`;
+
+      document.getElementById('exam-quiz-container').classList.add('hidden');
+      document.getElementById('exam-result-container').classList.remove('hidden');
+
+      playBellSound();
+      addStars(score >= 80 ? 10 : 5);
+      renderCertificate(score, rank, title);
+    }
+
+    function restartExam() {
+      examCurrentIndex = 0;
+      examUserAnswers = new Array(EXAM_QUESTIONS.length).fill(-1);
+      examSubmitted = false;
+      document.getElementById('exam-result-container').classList.add('hidden');
+      document.getElementById('exam-quiz-container').classList.remove('hidden');
+      renderExamQuestion();
+    }
+
+    /* ===============================================================
+       8. 專屬結業證書動態繪製 (Canvas Certificate Generator)
+       =============================================================== */
+    function renderCertificate(score = 100, rank = 'S 級', rankTitle = '會計領航大師') {
+      const canvas = document.getElementById('cert-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const studentName = document.getElementById('cert-student-name').value.trim() || '會計學員';
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 800, 520);
+      bgGrad.addColorStop(0, '#0f172a');
+      bgGrad.addColorStop(0.5, '#1e1b4b');
+      bgGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 800, 520);
+
+      ctx.strokeStyle = '#eab308';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(20, 20, 760, 480);
+
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(28, 28, 744, 464);
+
+      const corners = [[30, 30], [770, 30], [30, 490], [770, 490]];
+      corners.forEach(([cx, cy]) => {
+        ctx.fillStyle = '#eab308';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = '#a5b4fc';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('ACCOUNTING ODYSSEY · MASTERY CERTIFICATE', 400, 65);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 28px sans-serif';
+      ctx.fillText('會計五大要素學力認證榮譽證書', 400, 105);
+
+      ctx.strokeStyle = '#4f46e5';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(250, 122);
+      ctx.lineTo(550, 122);
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillText('茲證明學員', 400, 158);
+
+      ctx.fillStyle = '#fde047';
+      ctx.font = '900 32px sans-serif';
+      ctx.fillText(studentName, 400, 202);
+
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '14px sans-serif';
+      ctx.fillText('已圓滿完成「大一初級會計學：五大要素（資產、負債、權益、收益、費損）」', 400, 240);
+      ctx.fillText('之核心定義辨析、科目速配、會計恆等式動態平衡及商業情境推理挑戰，', 400, 265);
+      ctx.fillText('展現優異的會計邏輯與財務分析素養，特頒此證以資嘉許！', 400, 290);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(260, 315, 280, 80);
+      ctx.strokeStyle = '#334155';
+      ctx.strokeRect(260, 315, 280, 80);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('評鑑總分', 330, 342);
+      ctx.fillText('榮譽評級', 470, 342);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 28px sans-serif';
+      ctx.fillText(`${score} 分`, 330, 375);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.fillText(`${rank}`, 470, 375);
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日`;
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`認證日期：${dateStr}`, 60, 455);
+      ctx.fillText('認證字號：ACT-ODYSSEY-' + Math.floor(100000 + Math.random() * 900000), 60, 473);
+
+      ctx.save();
+      ctx.translate(680, 440);
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 34, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('★ 會計學審定 ★', 0, -6);
+      ctx.fillText('認證合格', 0, 10);
+      ctx.restore();
+    }
+
+    function downloadCertificate() {
+      const canvas = document.getElementById('cert-canvas');
+      const link = document.createElement('a');
+      link.download = `會計五大要素結業證書_${document.getElementById('cert-student-name').value.trim() || '學員'}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    /* ===============================================================
+       9. 學習星數與全局進度系統 (LocalStorage)
+       =============================================================== */
+    let globalStars = 0;
+
+    function addStars(num) {
+      globalStars += num;
+      document.getElementById('global-stars').innerText = globalStars;
+      try {
+        localStorage.setItem('accounting_game_stars', globalStars);
+      } catch (e) {}
+    }
+
+    function loadSavedProgress() {
+      try {
+        const saved = localStorage.getItem('accounting_game_stars');
+        if (saved) {
+          globalStars = parseInt(saved, 10);
+          document.getElementById('global-stars').innerText = globalStars;
+        }
+      } catch (e) {}
+    }
+
+    /* ===============================================================
+       10. 頁面初始化
+       =============================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedProgress();
+      selectElementGuide('asset');
+      renderAccountList();
+      updateScaleFromSliders();
+    });
+  </script>
+</body>
+</html>
